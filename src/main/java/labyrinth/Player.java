@@ -2,27 +2,36 @@ package labyrinth;
 
 public class Player implements Movable{
     // Skal holde styr på spillerens posisjon
-    private int x_pos;
-    private int y_pos;
-    
+    private int row;
+    private int col;
+
+    public Player(int startRow, int startCol) {
+        this.row = startRow;
+        this.col = startCol;
+    }
+
     @Override
     public void moveUp() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'moveUp'");
+        this.row--;
     }
     @Override
     public void moveDown() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'moveDown'");
+        this.row++;
     }
     @Override
     public void moveLeft() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'moveLeft'");
+        this.col--;
     }
     @Override
     public void moveRight() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'moveRight'");
+        this.col++;
+    }
+
+    public int getRow() {
+        return this.row;
+    }
+
+    public int getCol() {
+        return this.col;
     }
 }

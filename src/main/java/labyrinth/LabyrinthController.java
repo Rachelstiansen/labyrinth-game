@@ -17,9 +17,8 @@ public class LabyrinthController {
     private static final int CELL_SIZE = 25; // str på hver rute i labyrinten
 
     private LabyrinthGame labyrinthGame;
-    private int playerCol = 1;
-    private int playerRow = 0;
-    private Rectangle player;
+    private Player player;
+    private Rectangle playerNode;
 
     @FXML
     public void startGame() {
@@ -39,6 +38,7 @@ public class LabyrinthController {
         }
         drawLabyrinth(); // Fyller GridPane med ruter som representerer vegger og sti
         drawPlayer();
+        
         labyrinthGrid.requestFocus();
     }
 
@@ -47,9 +47,6 @@ public class LabyrinthController {
         List<String> labyrinth = labyrinthGame.getLabyrinth();
         // Henter ut listen hvor hver streng er en rad i labyrinten
 
-        // labyrinthGrid.setPrefWidth(CELL_SIZE * labyrinth.get(0).length());
-        // labyrinthGrid.setPrefHeight(CELL_SIZE * labyrinth.size());
-        
         for (int row = 0; row < labyrinth.size(); row++) {
             // itererer gjennom alle radene
             String line = labyrinth.get(row); // henter ut raden
@@ -73,51 +70,42 @@ public class LabyrinthController {
     }
 
     private void drawPlayer() {
-        player = new Rectangle(CELL_SIZE, CELL_SIZE);
-        player.setFill(Color.LIGHTGREEN);
-        labyrinthGrid.add(player, playerCol, playerRow);
+        playerNode = new Rectangle(CELL_SIZE, CELL_SIZE);
+        playerNode.setFill(Color.LIGHTGREEN);
+        player = new Player(0, 1);
+        labyrinthGrid.add(playerNode, player.getCol(), player.getRow());
     }
 
-    private void movePlayer(int rowChange, int colChange) {
-        System.out.println("Moving player");
-        
-        int newRow = playerRow + rowChange;
-        int newCol = playerCol + colChange;
-
+    private boolean canMove(int row, int col) {
+        // Checks if the player can move to the next square
         List<String> labyrinth = labyrinthGame.getLabyrinth();
-
-        char square = labyrinth.get(newRow).charAt(newCol);
-
-        if (square != '#') {
-            GridPane.setRowIndex(player, newRow);
-            GridPane.setColumnIndex(player, newCol);
-
-            playerRow = newRow;
-            playerCol = newCol;
-        }
+        return labyrinth.get(row).charAt(col) != '#';
     }
 
     @FXML
     public void initialize() {
-        
         labyrinthGrid.setFocusTraversable(true);
 
         labyrinthGrid.setOnKeyPressed(event -> {
-            System.out.println(event.getCode());
-            
-            if (event.getCode() == KeyCode.UP) {
-                movePlayer(-1, 0);
+            int row = player.getRow();
+            int col = player.getCol();
+
+            if (event.getCode() == KeyCode.UP && canMove(row - 1, col)) {
+                player.moveUp();
             }
-            else if (event.getCode() == KeyCode.DOWN) {
-                movePlayer(1, 0);
+            else if (event.getCode() == KeyCode.DOWN && canMove(row + 1, col)) {
+                player.moveDown();
             }
-            else if (event.getCode() == KeyCode.LEFT) {
-                movePlayer(0, -1);
+            else if (event.getCode() == KeyCode.LEFT && canMove(row, col - 1)) {
+                player.moveLeft();
             }
-            else if (event.getCode() == KeyCode.RIGHT) {
-                movePlayer(0, 1);
+            else if (event.getCode() == KeyCode.RIGHT && canMove(row, col + 1)) {
+                player.moveRight();
             }
+
+            GridPane.setRowIndex(playerNode, player.getRow());
+            GridPane.setColumnIndex(playerNode, player.getCol());
         });
     }
-       
+ 
 }

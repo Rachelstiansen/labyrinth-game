@@ -22,7 +22,7 @@ public class LabyrinthGame {
 
     public Player createPlayer() {
         // Set starting position
-        return this.player;
+        return player;
     }
 }
 
