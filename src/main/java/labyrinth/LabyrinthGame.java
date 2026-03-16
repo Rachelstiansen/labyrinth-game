@@ -1,11 +1,10 @@
 package labyrinth;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.List;
 
 public class LabyrinthGame {
+
     private List<String> labyrinth;
     private Player player;
 
@@ -13,15 +12,19 @@ public class LabyrinthGame {
         // Kaster IOException hvis filen ikke finnes eller kan leses.
         // Dersom feil, sendes den til kontroller-klassen som håndterer
         // Exception med try/catch
-        labyrinth = Files.readAllLines(Path.of(filename));
+        labyrinth = LabyrinthFileHandler.readLabyrinth(filename);
     }
 
     public List<String> getLabyrinth() {
         return labyrinth;
     }
 
-    public Player createPlayer() {
+    public void createPlayer(int row, int col) {
         // Set starting position
+        player = new Player(row, col);
+    }
+
+    public Player getPlayer() {
         return player;
     }
 }
