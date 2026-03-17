@@ -12,48 +12,44 @@ import javafx.scene.shape.Rectangle;
 
 public class LabyrinthController {
 
-    @FXML
-    private GridPane labyrinthGrid; // kobler til GridPane i fxml
+    // kobler til GridPane i fxml-fila:
+    @FXML private GridPane labyrinthGrid;
+    @FXML private Button startButton;
 
-    @FXML
-    private Button startButton;
-
-    private static final int CELL_SIZE = 25; // str på hver rute i labyrinten
+    private static final int CELL_SIZE = 25; // str på hver rute i labyrinten i piksler
 
     private LabyrinthGame labyrinthGame;
     private Rectangle playerNode;
+    private long elapsedTime;
 
     @FXML
     public void startGame() {
-        // System.out.println("Knappen fungerer!");
-        labyrinthGame = new LabyrinthGame(); // oppretter LabyrinthGame-objekt
-        startButton.setVisible(false);
-
+        // Kjøres når start-knappen trykkes
+        labyrinthGame = new LabyrinthGame(); // oppretter spill/model-objektet
+        startButton.setVisible(false); // fjerner startknappen for spillet har allerede startet
+        
         try {
             // leser labyrinten fra .txt-fil med Files.readAllLines()
             labyrinthGame.loadMaze("src/main/resources/labyrinth/labyrinth.txt");
-            // Hver linje i lista blir en rad i labyrinten
+            // Hver streng i lista blir en rad i labyrinten
         }
         catch (IOException e) {
-            // Hvis filen ikke finnes, skrives ut feilmelding
+            // Hvis filen ikke finnes eller ikke kan leses, skrives ut feilmelding
             e.printStackTrace();
             System.out.println("Unable to load labyrinth: " + e.getMessage());
             return;
         }
-        labyrinthGame.createPlayer(0, 1);
+        labyrinthGame.createPlayer(0, 1); // lager spiller i startposisjonen
 
-        drawLabyrinth(); // Fyller GridPane med ruter som representerer vegger og sti
-        drawPlayer();
-
-        setupKeyHandler();
-        
-        labyrinthGrid.requestFocus();
+        drawLabyrinth();    // Fyller GridPane med ruter som representerer vegger og sti
+        drawPlayer();       // Tegner spiller-blokk
+        setupKeyHandler();  // Aktiverer keyHandler så spillet responderer på keyboard-input
     }
 
     private void drawLabyrinth() {
         
-        List<String> labyrinth = labyrinthGame.getLabyrinth();
         // Henter ut listen hvor hver streng er en rad i labyrinten
+        List<String> labyrinth = labyrinthGame.getLabyrinth();
 
         for (int row = 0; row < labyrinth.size(); row++) {
             // itererer gjennom alle radene
@@ -78,26 +74,23 @@ public class LabyrinthController {
     }
 
     private void drawPlayer() {
-        playerNode = new Rectangle(CELL_SIZE, CELL_SIZE);
-        playerNode.setFill(Color.LIGHTGREEN);
+        playerNode = new Rectangle(CELL_SIZE, CELL_SIZE); // Lager grafisk firkant til spiller-brikken
+        playerNode.setFill(Color.LIGHTGREEN); 
         Player player = labyrinthGame.getPlayer();
-        labyrinthGrid.add(playerNode, player.getCol(), player.getRow());
-    }
-
-    private boolean canMove(int row, int col) {
-        // Checks if the player can move to the next square
-        List<String> labyrinth = labyrinthGame.getLabyrinth();
-        return labyrinth.get(row).charAt(col) != '#';
+        labyrinthGrid.add(playerNode, player.getCol(), player.getRow()); // Setter inn spilleren i GridPane
     }
 
     private void updatePlayerPosition() {
+        // Metoden kalles i setupKeyHandler for å oppdatere posisjonen til spilleren
+        // når brukeren trykker på piltastene på tastaturet.
         Player player = labyrinthGame.getPlayer();
         GridPane.setRowIndex(playerNode, player.getRow());
         GridPane.setColumnIndex(playerNode, player.getCol());
     }
 
-    @FXML
     public void setupKeyHandler() {
+        // gridPane må ha fokus for å kunne motta input fra tastaturet, ellers vil 
+        // ikke spilleren kunne flytte på seg.
         labyrinthGrid.setFocusTraversable(true);
 
         labyrinthGrid.setOnKeyPressed(event -> {
@@ -105,26 +98,23 @@ public class LabyrinthController {
                 return;
             }
 
-            Player player = labyrinthGame.getPlayer();
-            
-            int row = player.getRow();
-            int col = player.getCol();
-
-
-            if (event.getCode() == KeyCode.UP && canMove(row - 1, col)) {
-                player.moveUp();
+            if (event.getCode() == KeyCode.UP) {
+                labyrinthGame.moveUp();
             }
-            else if (event.getCode() == KeyCode.DOWN && canMove(row + 1, col)) {
-                player.moveDown();
+            else if (event.getCode() == KeyCode.DOWN) {
+                labyrinthGame.moveDown();
             }
-            else if (event.getCode() == KeyCode.LEFT && canMove(row, col - 1)) {
-                player.moveLeft();
+            else if (event.getCode() == KeyCode.LEFT) {
+                labyrinthGame.moveLeft();
             }
-            else if (event.getCode() == KeyCode.RIGHT && canMove(row, col + 1)) {
-                player.moveRight();
+            else if (event.getCode() == KeyCode.RIGHT) {
+                labyrinthGame.moveRight();
             }
 
             updatePlayerPosition();
+            if (labyrinthGame.isGameOver()) {
+                System.out.println("You reached finish line");
+            }
         });
     }
  
