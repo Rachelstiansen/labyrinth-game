@@ -5,6 +5,7 @@ import java.util.List;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.ListView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
@@ -15,6 +16,7 @@ public class LabyrinthController {
     // kobler til GridPane i fxml-fila:
     @FXML private GridPane labyrinthGrid;
     @FXML private Button startButton;
+    @FXML private ListView<String> highscoreList;
 
     private static final int CELL_SIZE = 25; // str på hver rute i labyrinten i piksler
 
@@ -44,6 +46,7 @@ public class LabyrinthController {
         drawLabyrinth();    // Fyller GridPane med ruter som representerer vegger og sti
         drawPlayer();       // Tegner spiller-blokk
         setupKeyHandler();  // Aktiverer keyHandler så spillet responderer på keyboard-input
+        labyrinthGame.startTimer();
     }
 
     private void drawLabyrinth() {
@@ -113,7 +116,8 @@ public class LabyrinthController {
 
             updatePlayerPosition();
             if (labyrinthGame.isGameOver()) {
-                System.out.println("You reached finish line");
+                long time = labyrinthGame.getTimeUsed();
+                System.out.println("You reached finish line in " + time + " seconds!");
             }
         });
     }

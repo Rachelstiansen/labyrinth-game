@@ -15,7 +15,7 @@ public class LabyrinthGame {
         this.gameOver = false;
     }
 
-    private void startTimer() {
+    public void startTimer() {
         startTime = System.currentTimeMillis();
     }
 
@@ -46,7 +46,16 @@ public class LabyrinthGame {
     public void checkGameOver() {
         if (getCurrentTile() == 'F') {
             gameOver = true;
+            endTime = System.currentTimeMillis();
         }
+    }
+
+    public long getTimeUsed() {
+        // returnerer tiden brukt i sekunder
+        if (!gameOver) {
+            return (System.currentTimeMillis() - startTime) / 1000;
+        }
+        return (endTime - startTime) / 1000;
     }
 
     public boolean isGameOver() {
