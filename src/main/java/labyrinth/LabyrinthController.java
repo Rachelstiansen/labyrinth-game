@@ -23,6 +23,7 @@ public class LabyrinthController {
     private LabyrinthGame labyrinthGame;
     private Rectangle playerNode;
     private long elapsedTime;
+    private boolean scoreSaved;
 
     @FXML
     public void startGame() {
@@ -115,11 +116,33 @@ public class LabyrinthController {
             }
 
             updatePlayerPosition();
-            if (labyrinthGame.isGameOver()) {
-                long time = labyrinthGame.getTimeUsed();
-                System.out.println("You reached finish line in " + time + " seconds!");
+            
+            if (labyrinthGame.isGameOver() && !scoreSaved) {
+                scoreSaved = true;
+                handleGameOver();
+                System.out.println("You reached finish line in " + labyrinthGame.getTimeUsed() + " seconds!");
             }
+
         });
+    }
+
+    private void handleGameOver() {
+        long time = labyrinthGame.getTimeUsed();
+
+        try {
+            LabyrinthFileHandler.writeHighscore("Player", time);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        loadHighscores();
+    }
+
+    private void loadHighscores() {
+        try {
+            
+        } catch (Exception e) {
+            // TODO: handle exception
+        }
     }
  
 }
