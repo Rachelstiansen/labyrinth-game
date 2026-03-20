@@ -9,7 +9,7 @@ import java.util.List;
 
 public class LabyrinthFileHandler {
 
-    private static final String HIGHSCORE_FILE = "highscores.txt";
+    private static final String HIGHSCORE_FILE = "src/main/resources/labyrinth/highscores.txt";
     
     public static List<String> readLabyrinth(String filename) throws IOException {
         // Kaster IOException hvis filen ikke finnes eller kan leses.
@@ -37,5 +37,5 @@ public class LabyrinthFileHandler {
         }
         return Files.readAllLines(path);
     }
-    
+
 }

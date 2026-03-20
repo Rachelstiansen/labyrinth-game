@@ -1,6 +1,8 @@
 package labyrinth;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class LabyrinthGame {
@@ -10,6 +12,8 @@ public class LabyrinthGame {
     private boolean gameOver;
     private long startTime;
     private long endTime;
+
+    private LabyrinthGame labyrinthGame;
 
     public LabyrinthGame() {
         this.gameOver = false;
@@ -99,5 +103,25 @@ public class LabyrinthGame {
             checkGameOver();
         }
     }
+
+     public List<Highscore> getHighscores() throws IOException{
+        
+        List<String> lines = LabyrinthFileHandler.readHighscores();
+        List<Highscore> highscores = new ArrayList<>();
+
+        for (String line : lines) {
+            String[] parts = line.split(",");
+            highscores.add(new Highscore(parts[0], Integer.parseInt(parts[1])));         
+        }
+
+        Collections.sort(highscores);
+        return highscores;
+    }
+
+    public void saveHighscore(String name) throws IOException {
+        long time = getTimeUsed();
+        LabyrinthFileHandler.writeHighscore(name, time);
+    }
+    
 }
 
