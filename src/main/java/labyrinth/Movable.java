@@ -1,7 +1,7 @@
 package labyrinth;
 
+// Definerer hvordan et spill-objekt kan flytte på seg
 public interface Movable {
-    // Definerer hvordan et spill-objekt kan flytte på seg
     void moveUp();
     void moveDown();
     void moveLeft();

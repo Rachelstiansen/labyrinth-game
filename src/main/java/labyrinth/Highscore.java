@@ -1,16 +1,10 @@
 package labyrinth;
 
-import java.util.List;
-
-import javafx.fxml.FXML;
-import javafx.scene.control.ListView;
-
+// Representerer en highscore-entry i labyrint-spillet
 public class Highscore implements Comparable<Highscore>{
-    @FXML private ListView<String> highscoreList;
     
     private String name;
-    private int time;
-    private LabyrinthGame labyrinthGame;
+    private int time; // tid i sekunder spilleren brukte på å komme gjennom labyrinten
     
     public Highscore(String name, int time) {
         this.name = name;
@@ -19,6 +13,7 @@ public class Highscore implements Comparable<Highscore>{
 
     @Override
     public int compareTo(Highscore other) {
+        // Sorterer highscore basert på tid i stigende rekkefølge
         return Integer.compare(this.time, other.time);
     }
 
