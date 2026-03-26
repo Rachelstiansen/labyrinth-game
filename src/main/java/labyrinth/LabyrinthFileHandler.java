@@ -38,4 +38,9 @@ public class LabyrinthFileHandler {
         return Files.readAllLines(path);
     }
 
+    public static void clearHighscores() throws IOException{
+        FileWriter writer = new FileWriter(HIGHSCORE_FILE, false);
+        writer.close();
+    }
+
 }

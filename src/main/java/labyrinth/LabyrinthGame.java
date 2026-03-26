@@ -12,8 +12,7 @@ public class LabyrinthGame {
     private boolean gameOver;
     private long startTime;
     private long endTime;
-
-    private LabyrinthGame labyrinthGame;
+    
 
     public LabyrinthGame() {
         this.gameOver = false;
@@ -23,7 +22,7 @@ public class LabyrinthGame {
         startTime = System.currentTimeMillis();
     }
 
-    public void loadMaze(String filename) throws IOException {
+    public void loadLabyrinth(String filename) throws IOException {
         // Kaster IOException hvis filen ikke finnes eller kan leses.
         // Dersom feil, sendes den til kontroller-klassen som håndterer
         // Exception med try/catch
@@ -104,7 +103,7 @@ public class LabyrinthGame {
         }
     }
 
-     public List<Highscore> getHighscores() throws IOException{
+    public List<Highscore> getHighscores() throws IOException{
         
         List<String> lines = LabyrinthFileHandler.readHighscores();
         List<Highscore> highscores = new ArrayList<>();

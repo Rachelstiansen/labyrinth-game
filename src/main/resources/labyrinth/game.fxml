@@ -28,9 +28,12 @@
       </AnchorPane>
    </top>
    <bottom>
-      <AnchorPane prefHeight="45.0" prefWidth="600.0" BorderPane.alignment="CENTER" />
+      <AnchorPane prefHeight="45.0" prefWidth="600.0" BorderPane.alignment="CENTER">
+         <children>
+            <Button id="resetButton" fx:id="resetButton" focusTraversable="false" layoutX="702.0" layoutY="10.0" mnemonicParsing="false" onAction="#handleResetHighscores" prefHeight="25.0" prefWidth="123.0" text="Reset all highscores" />
+         </children></AnchorPane>
    </bottom>
    <right>
-      <ListView prefHeight="370.0" focusTraversable="false" prefWidth="200.0" BorderPane.alignment="CENTER" />
+      <ListView fx:id="highscoreList" focusTraversable="false" prefHeight="370.0" prefWidth="200.0" BorderPane.alignment="CENTER" />
    </right>
 </BorderPane>

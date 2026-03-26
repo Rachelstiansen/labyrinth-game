@@ -2,10 +2,12 @@ package labyrinth;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
+import javafx.scene.control.TextInputDialog;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
@@ -16,13 +18,13 @@ public class LabyrinthController {
     // kobler til GridPane i fxml-fila:
     @FXML private GridPane labyrinthGrid;
     @FXML private Button startButton;
+    @FXML private Button resetButton;
     @FXML private ListView<String> highscoreList;
 
     private static final int CELL_SIZE = 25; // str på hver rute i labyrinten i piksler
 
     private LabyrinthGame labyrinthGame;
     private Rectangle playerNode;
-    private long elapsedTime;
     private boolean scoreSaved = false;
 
     @FXML
@@ -33,20 +35,20 @@ public class LabyrinthController {
         
         try {
             // leser labyrinten fra .txt-fil med Files.readAllLines()
-            labyrinthGame.loadMaze("src/main/resources/labyrinth/labyrinth.txt");
+            labyrinthGame.loadLabyrinth("src/main/resources/labyrinth/labyrinth.txt");
             // Hver streng i lista blir en rad i labyrinten
         }
         catch (IOException e) {
             // Hvis filen ikke finnes eller ikke kan leses, skrives ut feilmelding
-            e.printStackTrace();
             System.out.println("Unable to load labyrinth: " + e.getMessage());
+            e.printStackTrace();
             return;
         }
-        labyrinthGame.createPlayer(0, 1); // lager spiller i startposisjonen
 
+        labyrinthGame.createPlayer(0, 1); // lager spiller i startposisjonen
         drawLabyrinth();    // Fyller GridPane med ruter som representerer vegger og sti
         drawPlayer();       // Tegner spiller-blokk
-        setupKeyHandler();  // Aktiverer keyHandler så spillet responderer på keyboard-input
+        initializeControls();  // Aktiverer keyHandler så spillet responderer på keyboard-input
         labyrinthGame.startTimer();
     }
 
@@ -85,14 +87,14 @@ public class LabyrinthController {
     }
 
     private void updatePlayerPosition() {
-        // Metoden kalles i setupKeyHandler for å oppdatere posisjonen til spilleren
+        // Metoden kalles i initializeControls for å oppdatere posisjonen til spilleren
         // når brukeren trykker på piltastene på tastaturet.
         Player player = labyrinthGame.getPlayer();
         GridPane.setRowIndex(playerNode, player.getRow());
         GridPane.setColumnIndex(playerNode, player.getCol());
     }
 
-    public void setupKeyHandler() {
+    public void initializeControls() {
         // gridPane må ha fokus for å kunne motta input fra tastaturet, ellers vil 
         // ikke spilleren kunne flytte på seg.
         labyrinthGrid.setFocusTraversable(true);
@@ -114,21 +116,26 @@ public class LabyrinthController {
             else if (event.getCode() == KeyCode.RIGHT) {
                 labyrinthGame.moveRight();
             }
-
             updatePlayerPosition();
             
             if (labyrinthGame.isGameOver() && !scoreSaved) {
                 scoreSaved = true;
                 handleGameOver();
-                // return;
             }
-
         });
     }
 
-    private void handleGameOver() {
+    private String handleNameInput() {
+        TextInputDialog dialog = new TextInputDialog();
+        dialog.setTitle("Highscore");
+        dialog.setHeaderText("You finished!");
+        dialog.setContentText("Enter your name: ");       
+        String name = dialog.showAndWait().orElse("Anonymous");
+        return name;
+    }
+
+    public void loadHighscores() {
         try {
-            labyrinthGame.saveHighscore("Player");
             List<Highscore> highscores = labyrinthGame.getHighscores();
             highscoreList.getItems().clear();
 
@@ -136,7 +143,29 @@ public class LabyrinthController {
                 highscoreList.getItems().add(highscore.getName() + " - " + highscore.getTime() + " s");
             }
 
-        } catch (Exception e) {
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void handleGameOver() {
+        String name = handleNameInput();
+        try {
+            labyrinthGame.saveHighscore(name);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        loadHighscores();
+    }
+
+    @FXML
+    private void handleResetHighscores() {
+        System.out.println("Reset clicked");
+        try {
+            LabyrinthFileHandler.clearHighscores();
+            loadHighscores();
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
