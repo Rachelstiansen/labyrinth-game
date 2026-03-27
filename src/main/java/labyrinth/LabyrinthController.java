@@ -2,7 +2,6 @@ package labyrinth;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Optional;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -13,9 +12,11 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
+// Kontrollerklasse som håndterer brukergresesnittet, kobler sammen LabyrinthGame
+// med det som brukeren ser på skjermen.
 public class LabyrinthController {
 
-    // kobler til GridPane i fxml-fila:
+    // kobler til elementer i fxml-fila:
     @FXML private GridPane labyrinthGrid;
     @FXML private Button startButton;
     @FXML private Button resetButton;
@@ -23,15 +24,15 @@ public class LabyrinthController {
 
     private static final int CELL_SIZE = 25; // str på hver rute i labyrinten i piksler
 
-    private LabyrinthGame labyrinthGame;
-    private Rectangle playerNode;
-    private boolean scoreSaved = false;
+    private LabyrinthGame labyrinthGame; // lagrer én konkret instans av labyrintspillet
+    private Rectangle playerNode;        // grafisk representasjon av spilleren
+    private boolean scoreSaved = false;  // hindrer at scoren lagres flere ganger når spillet er ferdig
 
     @FXML
     public void startGame() {
         // Kjøres når start-knappen trykkes
         labyrinthGame = new LabyrinthGame(); // oppretter spill/model-objektet
-        startButton.setVisible(false); // fjerner startknappen for spillet har allerede startet
+        startButton.setVisible(false); // fjerner startknappen når spillet har startet
         
         try {
             // leser labyrinten fra .txt-fil med Files.readAllLines()
@@ -46,14 +47,13 @@ public class LabyrinthController {
         }
 
         labyrinthGame.createPlayer(0, 1); // lager spiller i startposisjonen
-        drawLabyrinth();    // Fyller GridPane med ruter som representerer vegger og sti
-        drawPlayer();       // Tegner spiller-blokk
-        initializeControls();  // Aktiverer keyHandler så spillet responderer på keyboard-input
-        labyrinthGame.startTimer();
+        drawLabyrinth();            // Fyller GridPane med ruter som representerer vegger og sti
+        drawPlayer();               // Tegner spiller-blokk
+        initializeControls();       // Aktiverer tastaturkontroller så spillet responderer på keyboard-input
+        labyrinthGame.startTimer(); // starter tidtakingen
     }
 
     private void drawLabyrinth() {
-        
         // Henter ut listen hvor hver streng er en rad i labyrinten
         List<String> labyrinth = labyrinthGame.getLabyrinth();
 
@@ -69,10 +69,10 @@ public class LabyrinthController {
                 
                 // Setter fargen på vegg og sti
                 if (square == '#') {
-                    cell.setFill(Color.DARKCYAN);
+                    cell.setFill(Color.DARKCYAN); // farge på vegg
                 }
                 else {
-                    cell.setFill(Color.ANTIQUEWHITE);
+                    cell.setFill(Color.ANTIQUEWHITE); // farge på sti
                 }
                 labyrinthGrid.add(cell, col, row); // Legger til ruta i GridPane
             }
@@ -80,9 +80,10 @@ public class LabyrinthController {
     }
 
     private void drawPlayer() {
+        // tegner spilleren i startposisjonen
         playerNode = new Rectangle(CELL_SIZE, CELL_SIZE); // Lager grafisk firkant til spiller-brikken
-        playerNode.setFill(Color.LIGHTGREEN); 
-        Player player = labyrinthGame.getPlayer();
+        playerNode.setFill(Color.LIGHTGREEN);             // Farger brikken
+        Player player = labyrinthGame.getPlayer();        // Henter spilleren
         labyrinthGrid.add(playerNode, player.getCol(), player.getRow()); // Setter inn spilleren i GridPane
     }
 
@@ -90,6 +91,7 @@ public class LabyrinthController {
         // Metoden kalles i initializeControls for å oppdatere posisjonen til spilleren
         // når brukeren trykker på piltastene på tastaturet.
         Player player = labyrinthGame.getPlayer();
+        // Flytter spilleren til ny rad og kolonne:
         GridPane.setRowIndex(playerNode, player.getRow());
         GridPane.setColumnIndex(playerNode, player.getCol());
     }
@@ -100,10 +102,11 @@ public class LabyrinthController {
         labyrinthGrid.setFocusTraversable(true);
 
         labyrinthGrid.setOnKeyPressed(event -> {
+            // sjekker at spillet er initialisert
             if (labyrinthGame == null || labyrinthGame.getPlayer() == null) {
                 return;
             }
-
+            // Flytter spiller basert på input fra piltastene
             if (event.getCode() == KeyCode.UP) {
                 labyrinthGame.moveUp();
             }
@@ -116,8 +119,9 @@ public class LabyrinthController {
             else if (event.getCode() == KeyCode.RIGHT) {
                 labyrinthGame.moveRight();
             }
-            updatePlayerPosition();
+            updatePlayerPosition(); // oppdaterer spillerposisjonen i gridet (visuelt)
             
+            // sjekker om spillet er ferdig
             if (labyrinthGame.isGameOver() && !scoreSaved) {
                 scoreSaved = true;
                 handleGameOver();
@@ -126,18 +130,21 @@ public class LabyrinthController {
     }
 
     private String handleNameInput() {
+        // Lager en dialog-box for å ta inn navnet til spilleren
         TextInputDialog dialog = new TextInputDialog();
         dialog.setTitle("Highscore");
         dialog.setHeaderText("You finished!");
         dialog.setContentText("Enter your name: ");       
-        String name = dialog.showAndWait().orElse("Anonymous");
+        String name = dialog.showAndWait().orElse("Anonymous"); // Viser dialog-boks til brukeren
+        // og venter på at OK trykkes. Hvis ingenting skrives returneres "Anonymous" som spillernavn. 
         return name;
     }
 
     public void loadHighscores() {
+        // Laster og viser highscores i ListView
         try {
             List<Highscore> highscores = labyrinthGame.getHighscores();
-            highscoreList.getItems().clear();
+            highscoreList.getItems().clear(); // Tømmer listen før nye verdier legges til
 
             for (Highscore highscore : highscores) {
                 highscoreList.getItems().add(highscore.getName() + " - " + highscore.getTime() + " s");
@@ -149,22 +156,24 @@ public class LabyrinthController {
     }
 
     private void handleGameOver() {
+        // håndterer hva som skjer når spilleren har kommet gjennom labyrinten
         String name = handleNameInput();
         try {
+            // lagrer highscore i .txt-fila
             labyrinthGame.saveHighscore(name);
 
         } catch (IOException e) {
             e.printStackTrace();
         }
-        loadHighscores();
+        loadHighscores(); // oppdaterer highscore-listen
     }
 
     @FXML
     private void handleResetHighscores() {
-        System.out.println("Reset clicked");
+        // Kjøres når reset-knappen trykkes
         try {
-            LabyrinthFileHandler.clearHighscores();
-            loadHighscores();
+            LabyrinthFileHandler.clearHighscores(); // sletter alle highscores
+            loadHighscores(); // oppdaterer highscore-listen
         } catch (IOException e) {
             e.printStackTrace();
         }
