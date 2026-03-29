@@ -42,7 +42,6 @@ public class LabyrinthController {
         catch (IOException e) {
             // Hvis filen ikke finnes eller ikke kan leses, skrives ut feilmelding
             System.out.println("Unable to load labyrinth: " + e.getMessage());
-            e.printStackTrace();
             return;
         }
 
@@ -151,7 +150,7 @@ public class LabyrinthController {
             }
 
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println("Could not get highscores from file");
         }
     }
 
@@ -163,7 +162,7 @@ public class LabyrinthController {
             labyrinthGame.saveHighscore(name);
 
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println("Could not save highscore to file");;
         }
         loadHighscores(); // oppdaterer highscore-listen
     }
@@ -175,7 +174,7 @@ public class LabyrinthController {
             LabyrinthFileHandler.clearHighscores(); // sletter alle highscores
             loadHighscores(); // oppdaterer highscore-listen
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println("Could not reset highscore");;
         }
     }
  

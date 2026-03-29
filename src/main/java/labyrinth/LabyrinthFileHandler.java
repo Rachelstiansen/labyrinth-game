@@ -28,7 +28,6 @@ public class LabyrinthFileHandler {
         }
         catch (IOException e) {
             System.out.println("Could not write to file");
-            e.printStackTrace();
         }
     }
 

@@ -7,8 +7,15 @@ public class Highscore implements Comparable<Highscore>{
     private int time; // tid i sekunder spilleren brukte på å komme gjennom labyrinten
     
     public Highscore(String name, int time) {
-        this.name = name;
-        this.time = time;
+        if (name == null || name.isEmpty()) {
+            this.name = "Anonymous";
+        }
+        else this.name = name;
+
+        if (time < 0) {
+            throw new IllegalArgumentException("Time cannot be negative!");
+        }
+        else this.time = time;
     }
 
     @Override
