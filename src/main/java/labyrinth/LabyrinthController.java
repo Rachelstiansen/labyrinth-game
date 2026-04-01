@@ -143,7 +143,7 @@ public class LabyrinthController {
         // Laster og viser highscores i ListView
         try {
             List<Highscore> highscores = labyrinthGame.getHighscores();
-            highscoreList.getItems().clear(); // Tømmer listen før nye verdier legges til
+            highscoreList.getItems().clear(); // Tømmer listen før nye verdier legges til for å unngå duplikater
 
             for (Highscore highscore : highscores) {
                 highscoreList.getItems().add(highscore.getName() + " - " + highscore.getTime() + " s");

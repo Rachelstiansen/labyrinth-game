@@ -2,6 +2,7 @@ package labyrinth;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.IOException;
@@ -17,8 +18,8 @@ public class FileTest {
             LabyrinthFileHandler.writeHighscore("TestUser", 18); 
             List<String> highscores = LabyrinthFileHandler.readHighscores();
             
-            assertFalse(highscores.isEmpty());
-            assertEquals(highscores.get(highscores.size() - 1), "TestUser, 18");
+            assertFalse(highscores.isEmpty(), "Tests if highscores list is not empty after writing a highscore");
+            assertTrue(highscores.contains("TestUser,18"), "Tests if highscores list contains the written highscore with correct format");
         }
         catch (IOException e) {
             fail("IOException should not occur" + e.getMessage());

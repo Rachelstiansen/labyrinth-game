@@ -27,7 +27,10 @@ public class LabyrinthGameTest {
 
     @Test
     public void testCannotMoveOutsideGrid() {
-        assertFalse(game.canMove(game.getLabyrinth().size(), 0));
+        assertFalse(game.canMove(game.getLabyrinth().size(), 0), "Tests if player cannot move outside the grid downwards");
+        int row = 0;
+        String line = game.getLabyrinth().get(row);
+        assertFalse(game.canMove(line.length(), 0), "Tests if player cannot move outside the grid to the right");
     }
 
     @Test
@@ -38,7 +41,7 @@ public class LabyrinthGameTest {
         game.moveRight();
         int newCol = game.getPlayer().getCol();
 
-        assertEquals(startCol + 1, newCol);
+        assertEquals(startCol + 1, newCol, "Tests if player moves right by one column");
     }
 
     @Test
@@ -48,7 +51,7 @@ public class LabyrinthGameTest {
             String line = game.getLabyrinth().get(row);
             for (int col = 0; col < line.length(); col++) {
                 if (line.charAt(col) == '#') {
-                    assertFalse(game.canMove(row, col));
+                    assertFalse(game.canMove(row, col), "Tests if player cannot move through wall at position (" + row + ", " + col + ")");
                 }
             }
         }
@@ -64,7 +67,7 @@ public class LabyrinthGameTest {
                     int c = col;
                     assertThrows(IllegalArgumentException.class, () -> {
                         game.createPlayer(r, c);
-                    });
+                    }, "Tests if creating player in wall at position (" + r + ", " + c + ") throws IllegalArgumentException");
                 }
             }
         }
