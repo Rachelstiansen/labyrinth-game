@@ -38,6 +38,9 @@ public class LabyrinthGame {
 
     public void createPlayer(int row, int col) {
         // oppretter spiller på en gitt startposisjon
+        if (!canMove(row, col)) {
+            throw new IllegalArgumentException("Invalid start position, outside grid or in wall");
+        }
         player = new Player(row, col);
     }
 

@@ -23,7 +23,7 @@ public class LabyrinthFileHandler {
         // Skriver ny highscore med navn og tid til highscores.txt
         try {
             FileWriter writer = new FileWriter(HIGHSCORE_FILE, true);
-            writer.write(name + "," + time + "\n"); // en highscore per linje
+            writer.write(name + ", " + time + "\n"); // en highscore per linje
             writer.close();
         }
         catch (IOException e) {
