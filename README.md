@@ -6,6 +6,8 @@ The player navigates through a maze using the arrow keys while the game
 tracks the completion time. Finished runs can be saved to a persistent
 highscore list and compared with previous attempts.
 
+![Labyrinth Game](docs/images/labyrinth-game.png)
+
 ## Features
 
 - Interactive maze rendered with JavaFX
