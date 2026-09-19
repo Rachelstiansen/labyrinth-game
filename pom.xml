@@ -3,13 +3,13 @@
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
  
-    <groupId>TDT4100_project</groupId>
-    <artifactId>tdt4100_v2024_prosjekt_boilerplate</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <groupId>io.github.rachelstiansen</groupId>
+    <artifactId>labyrinth-game</artifactId>
+    <version>1.0.0</version>
     <packaging>jar</packaging>
  
-    <name>tdt4100_v2024_prosjekt_boilerplate</name>
-	
+    <name>Labyrinth Game</name>
+	<description>A JavaFX labyrinth game with persistent highscores.</description>
 
    <dependencies>
 
@@ -61,7 +61,7 @@
 			<version>0.0.8</version>
 			<configuration>
 				<options></options>
-				<mainClass>exampleproject.ExampleProjectApp</mainClass>
+				<mainClass>labyrinth.LabyrinthApp</mainClass>
 				<!-- for jlink -->
 				<compress>2</compress>
 				<noHeaderFiles>true</noHeaderFiles>
