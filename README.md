@@ -1,4 +1,4 @@
-Beskrivelse av spillet
+## Beskrivelse av spillet
 
 Appen er et labyrint-spill hvor du som spiller navigerer deg gjennom en labyrint fra
 start til mål ved bruk av piltastene på tastaturet. Labyrinten leses fra en tekstfil hvor # er brukt
